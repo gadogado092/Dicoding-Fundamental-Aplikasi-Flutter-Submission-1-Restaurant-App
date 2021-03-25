@@ -6,17 +6,31 @@ part of 'restaurant.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+Restaurants _$RestaurantsFromJson(Map<String, dynamic> json) {
+  return Restaurants(
+    (json['restaurants'] as List)
+        ?.map((e) =>
+            e == null ? null : Restaurant.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+  );
+}
+
+Map<String, dynamic> _$RestaurantsToJson(Restaurants instance) =>
+    <String, dynamic>{
+      'restaurants': instance.listRestaurant,
+    };
+
 Restaurant _$RestaurantFromJson(Map<String, dynamic> json) {
-  return Restaurant()
-    ..id = json['id'] as String
-    ..name = json['name'] as String
-    ..description = json['description'] as String
-    ..pictureId = json['pictureId'] as String
-    ..city = json['city'] as String
-    ..rating = (json['rating'] as num)?.toDouble()
-    ..menu = json['menus'] == null
-        ? null
-        : Menu.fromJson(json['menus'] as Map<String, dynamic>);
+  return Restaurant(
+    json['id'] as String,
+    json['name'] as String,
+    json['description'] as String,
+    json['pictureId'] as String,
+    json['city'] as String,
+    (json['rating'] as num)?.toDouble(),
+  )..menu = json['menus'] == null
+      ? null
+      : Menu.fromJson(json['menus'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$RestaurantToJson(Restaurant instance) =>

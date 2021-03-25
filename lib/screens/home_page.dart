@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:restaurant_app/models/restaurant.dart';
 import 'package:restaurant_app/res/colors.dart';
 import 'package:restaurant_app/widgets/base_text.dart';
+import 'package:restaurant_app/widgets/loading.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -8,6 +12,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // Future<List<Restaurant>> _futurelistRestaurant;
+
+  @override
+  void initState() {
+    // _futurelistRestaurant = _fetchRestaurant();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +93,35 @@ class _HomePageState extends State<HomePage> {
                     )
                   ],
                 )),
-            Text("ada"),
+            FutureBuilder<String>(
+              future: DefaultAssetBundle.of(context)
+                  .loadString('assets/local_restaurant.json'),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final restaurant =
+                      Restaurants.fromJson(jsonDecode(snapshot.data));
+                  return ListView.builder(
+                      itemCount: restaurant.listRestaurant.length,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, position) {
+                        Restaurant restaurantItem =
+                            restaurant.listRestaurant[position];
+                        return BaseText(text: restaurantItem.name);
+                      });
+                } else if (snapshot.hasError) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 64.0),
+                    child: Center(child: BaseText(text: "Error Load Data")),
+                  );
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.only(top: 64.0),
+                  child: Loading(),
+                );
+              },
+            )
           ],
         ),
       )),
